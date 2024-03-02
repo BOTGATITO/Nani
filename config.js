@@ -12,7 +12,7 @@ import { en, es, id, ar, pt } from './lib/idiomas/total-idiomas.js'
 // ES ➜ Si desea recibir reportes debe de usar los tres parámetros (Número, nombre y true)
 global.owner = [
 ['593993370003', 'Owner', true], //LunitaBot🌙
-['593993370003', 'Owner2', true],
+['18296922040', 'Owner2', true],
 ['593993370003'], ['593993370003'], ['593993370003'], ["593993370003"], ['593993370003']]
 
 global.mods = [] 
