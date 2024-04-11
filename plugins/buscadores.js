@@ -1,5 +1,6 @@
 //import { googleIt } from '@bochilteam/scraper'
 import translate from '@vitalets/google-translate-api'
+import uploader from '../lib/uploadImage.js'
 import googleIt from 'google-it'
 import fetch from 'node-fetch'
 import axios from 'axios'
@@ -7,23 +8,25 @@ import yts from 'yt-search'
 import cheerio from 'cheerio'
 import gpt from 'api-dylux'
 import gtts from 'node-gtts'
-import {readFileSync, unlinkSync} from 'fs';
+import {readFileSync, unlinkSync} from 'fs'
 import {join} from 'path'
 import fs from 'fs' 
 import {Configuration, OpenAIApi} from 'openai';
-const configuration = new Configuration({organization: global.openai_org_id, apiKey: global.openai_key});
-const openaiii = new OpenAIApi(configuration);
+const configuration = new Configuration({organization: global.openai_org_id, apiKey: global.openai_key})
+const openaiii = new OpenAIApi(configuration)
 const idioma = 'es'
 
 let handler = async (m, { conn, command, usedPrefix, args, text }) => {
 const isCommand1 = /^(googlef?)$/i.test(command)
-const isCommand2 = /(openai|chatgpt|ia|ai)/i.test(command)
-const isCommand3 = /^(okgoogle)$/i.test(command)
+const isCommand2 = /(openai|chatgpt|ia|ai)$/i.test(command)
+const isCommand3 = /^(bot|simi|simsimi|alexa|bixby|cortana|siri|okgoogle)$/i.test(command)
 const isCommand4 = /^(githubstalk|usuariogithub|usergithub)$/i.test(command)
 const isCommand5 = /^(yt(s|search))$/i.test(command)
 const isCommand6 = /^(translate|traducir|trad)$/i.test(command)
-const isCommand7 = /^(openaivoz|chatgptvoz|iavoz|robotvoz|openai2voz|chatgpt2voz|ia2voz|robot2voz|gatavoz|GataBotvoz|gptvoz|ai_voz|ai_voce)$/i.test(command)
-
+const isCommand7 = /^(openaivoz|chatgptvoz|iavoz|robotvoz|openai2voz|chatgpt2voz|ia2voz|robot2voz|gatavoz|GataBotvoz|gptvoz|ai_voz|aivoce)$/i.test(command)
+const isCommand8 = /^(gemini|bard)$/i.test(command)
+const isCommand9 = /^(bing|bingia|iabing|copilot)$/i.test(command)
+    
 let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
 async function reportError(e) {
 await m.reply(lenguajeGB['smsMalError3']() + '\n*' + lenguajeGB.smsMensError1() + '*\n*' + usedPrefix + `${lenguajeGB.lenguaje() == 'es' ? 'reporte' : 'report'}` + '* ' + `${lenguajeGB.smsMensError2()} ` + usedPrefix + command)
@@ -82,7 +85,7 @@ let resu2 = await ia2.json()
 m.reply(resu2.response.trim())    
 } catch {        
 try {    
-let tioress = await fetch(`https://api.lolhuman.xyz/api/openai-turbo?apikey=${lolkeysapi}&text=${text}`)
+let tioress = await fetch(`https://skizo.tech/api/openai?apikey=${lolkeysapi}&text=${text}`)
 let hasill = await tioress.json()
 m.reply(`${hasill.result}`.trim())   
 } catch (e) {
@@ -94,10 +97,9 @@ case isCommand3:
 if (!text) return conn.reply(m.chat, lenguajeGB.smsMalused2() + `\n*${usedPrefix + command} ${lenguajeGB.smsCreA()}*` , m) 
 try{
 await conn.sendPresenceUpdate('composing', m.chat)
-let res = await fetch (`https://api.simsimi.net/v2/?text=${text}&lc=${lenguajeGB.lenguaje()}`)  
+let res = await fetch (`https://api.lolhuman.xyz/api/simi?apikey=${lolkeysapi}&text=${text}`)  
 let json = await res.json()
-let tes = json.success.replace('simsimi', 'simsimi').replace('Simsimi', 'Simsimi').replace('sim simi', 'sim simi')
-m.reply(`${tes}`) 
+m.reply(`${json.result}`) 
 } catch (e) {
 reportError(e)
 }     
@@ -179,24 +181,33 @@ reportError(e)
 }          
 break
 case isCommand6:
-if (!text) throw `${lenguajeGB.smsMalused2()}\n*${usedPrefix + command}* es Hello`
+let user = global.db.data.users[m.sender]
+let lang
+if (!text && !m.quoted) return m.reply(`${lenguajeGB.smsMalused2()}\n*${usedPrefix + command}* es Hello`)
 try {
-let lang = args[0];
-let text = args.slice(1).join(' ');
-const defaultLang = 'es';
-if ((args[0] || '').length !== 2) {
-lang = defaultLang;
-text = args.join(' ');
+if (m.quoted && m.quoted.text) {
+if (text) {
+lang = text
+} else {
+lang = user.GBLanguage || lenguajeGB.lenguaje()   
 }
-//if (!text && m.quoted && m.quoted.text) text = m.quoted.text;
-const result = await translate(`${text}`, {to: lang, autoCorrect: true});
-await m.reply(result.text);
+text = m.quoted.text
+} else {
+lang = args[0]
+let text = args.slice(1).join(' ')
+const defaultLang = 'es'
+if ((args[0] || '').length !== 2) {
+lang = defaultLang
+text = args.join(' ')
+}}
+const result = await translate(`${text}`, {to: lang, autoCorrect: true})
+await m.reply(result.text)
 } catch {
 try {
-const lol = await fetch(`https://api.lolhuman.xyz/api/translate/auto/${lang}?apikey=${lolkeysapi}&text=${text}`);
+const lol = await fetch(`https://api.lolhuman.xyz/api/translate/auto/${lang}?apikey=${lolkeysapi}&text=${text}`)
 const loll = await lol.json();
-const result2 = loll.result.translated;
-await m.reply(result2);
+const result2 = loll.result.translated
+await m.reply(result2)
 } catch (e) {
 reportError(e)
 }}
@@ -205,25 +216,46 @@ break
 case isCommand7:
 if (!text) throw `*${lenguajeGB['smsOpenai1']()} ${usedPrefix + command}* ${lenguajeGB.smsOpenai2()}\n\n*${usedPrefix + command}* ${lenguajeGB.smsOpenai3()}`
 try {
-conn.sendPresenceUpdate('recording', m.chat);
-const botIA222 = await openaiii.createCompletion({model: 'text-davinci-003', prompt: text, temperature: 0.3, max_tokens: 4097, stop: ['Ai:', 'Human:'], top_p: 1, frequency_penalty: 0.2, presence_penalty: 0});
-if (botIA222.data.choices[0].text == 'error' || botIA222.data.choices[0].text == '' || !botIA222.data.choices[0].text) return XD; // causar error undefined para usar otra api
-const audio2 = await tts(botIA222.data.choices[0].text, idioma);
-await conn.sendMessage(m.chat, {audio: audio2, fileName: 'error.mp3', mimetype: 'audio/mpeg', ptt: true}, {quoted: m});    
-} catch {
-try {
-const tioress22 = await fetch(`https://api.lolhuman.xyz/api/openai?apikey=${lolkeysapi}&text=${text}&user=${m.sender}`);
-const hasill22 = await tioress22.json();
+await conn.sendPresenceUpdate('recording', m.chat)
+const tioress22 = await fetch(`https://skizo.tech/api/openai?apikey=${lolkeysapi}&text=${text}`)
+const hasill22 = await tioress22.json()
 if (hasill22.result == 'error' || hasill22.result == '' || !hasill22.result) return 
-const hasill22_result = await translate(`${hasill22.result}`, {to: idioma, autoCorrect: true});
-const audio7 = await tts(hasill22_result.text, idioma);
-await conn.sendMessage(m.chat, {audio: audio7, fileName: 'error.mp3', mimetype: 'audio/mpeg', ptt: true}, {quoted: m});            
+const hasill22_result = await translate(`${hasill22.result}`, {to: idioma, autoCorrect: true})
+const audio7 = await tts(hasill22_result.text, idioma)
+await conn.sendMessage(m.chat, {audio: audio7, fileName: 'error.mp3', mimetype: 'audio/mpeg', ptt: true}, {quoted: m})            
 } catch (e) {
 reportError(e)
+}
+break   
+
+case isCommand8:
+if (!text) throw `*Escriba un texto usando el comando para usar a Gemini*`
+await conn.sendPresenceUpdate('composing', m.chat)       
+try {
+var apii = await fetch(`https://aemt.me/gemini?text=${text}`)
+var res = await apii.json()
+await m.reply(res.result)
+} catch (e) {
+reportError(e)
+}
+break
+
+case isCommand9:
+if (!text) throw `*Escriba un texto usando el comando para usar Copilot*`
+await conn.sendPresenceUpdate('composing', m.chat)
+try {
+const API_COPILOT = `https://aemt.me/bingai?text=${encodeURIComponent(text)}`
+const response = await fetch(API_COPILOT)
+const data = await response.json()
+const respuestaAPI = data.result
+await conn.reply(m.chat, respuestaAPI, m)
+} catch (e) {
+reportError(e)
+}
+break 
+        
 }}
-break        
-}}
-handler.command = /^(googlef?|openai|chatgpt|ia|ai|simi|simsimi|alexa|bixby|cortana|siri|okgoogle|githubstalk|usuariogithub|usergithub|(yt(s|search)|(openaivoz|chatgptvoz|iavoz|robotvoz|openai2voz|chatgpt2voz|ia2voz|robot2voz|gatavoz|GataBotvoz|gptvoz|ai_voz|ai_voce)|(translate|traducir|trad)))$/i
+handler.command = /^(googlef?|openai|chatgpt|ia|ai|bot|simi|simsimi|alexa|bixby|cortana|siri|okgoogle|githubstalk|usuariogithub|usergithub|(yt(s|search)|(openaivoz|chatgptvoz|iavoz|robotvoz|openai2voz|chatgpt2voz|ia2voz|robot2voz|gatavoz|GataBotvoz|gptvoz|ai_voz|aivoce)|(translate|traducir|trad))|gemini|bard|bing|bingia|iabing|copilot)$/i
 handler.register = true
 export default handler 
 
@@ -268,4 +300,4 @@ async function tts(text = 'error', lang = 'es') {
       reject(e);
     }
   });
-                                                                                                                                      }
+}
