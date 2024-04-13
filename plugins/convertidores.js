@@ -10,7 +10,7 @@ import { join } from 'path'
 let handler = async (m, { conn, command, usedPrefix, args }) => {
 let q, mime, media, out, caption
 
-const isCommand1 = /^(to(img|image)?|img|jpe?g|png)\b$/i.test(command)
+//const isCommand1 = /^(to(img|image)?|img|jpe?g|png)\b$/i.test(command)
 const isCommand2 = /^(tourl|url|upload)\b$/i.test(command)
 const isCommand3 = /^(to(video|mp4)?|mp4)\b$/i.test(command)
 const isCommand4 = /^(to(gif|gifau)?|gif|gifau)\b$/i.test(command)
