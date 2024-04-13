@@ -11,8 +11,8 @@ const out = await webp2png(media).catch((_) => null) || Buffer.alloc(0);
 await conn.sendFile(m.chat, out, 'pp.jpg', null, m, false, { contextInfo: {externalAdReply :{ mediaUrl: null, mediaType: 1, description: null, title: wm, body: ' 💫 𝐒𝐮𝐩𝐞𝐫 𝐁𝐨𝐭 𝐃𝐞 𝐖𝐡𝐚𝐭𝐬𝐚𝐩𝐩 🥳 ', previewType: 0, thumbnail: img.getRandom(), sourceUrl: redes.getRandom()}}})  
 //conn.sendFile(m.chat, out, 'error.png', null, m);
 } catch (e) {
-await conn.reply(m.chat, `']()} ${usedPrefix + command}\n\n${wm}`, fkontak, m)
-console.log(`❗`)
+await conn.reply(m.chat, `${lenguajeGB['smsMalError3']()}#report ${lenguajeGB['smsMensError2']()} ${usedPrefix + command}\n\n${wm}`, fkontak, m)
+console.log(`❗❗ ${lenguajeGB['smsMensError2']()} ${usedPrefix + command} ❗❗`)
 console.log(e)}}
 handler.help = ['toimg (reply)'];
 handler.tags = ['sticker'];
