@@ -411,7 +411,7 @@ ${readMore}
 
  `.trim()
  
-const img = ['https://telegra.ph/file/b2cf084886a7a299bc3b2.jpg']
+const img = ['https://telegra.ph/file/7011d221913c31ac55a5e.png']
 await conn.sendMessage(m.chat, { image: { url: img.getRandom() }, gifPlayback: true, caption: menu, mentions: [m.sender, global.conn.user.jid] }, { quoted: fkontak })
 	
 } catch (e) {
